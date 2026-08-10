@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ScholarFlow{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div>
+      <div class="brand"><div class="brand-box">SF</div><div><h1>ScholarFlow</h1><p>Research workspace</p></div></div>
+      {% if user.is_authenticated %}
+      <nav class="nav">
+        <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+        <a href="{% url 'paper_list' %}" class="{% if request.resolver_match.url_name == 'paper_list' or request.resolver_match.url_name == 'paper_detail' %}active{% endif %}">Library</a>
+        <a href="{% url 'synthesis' %}" class="{% if request.resolver_match.url_name == 'synthesis' %}active{% endif %}">Synthesis</a>
+        <a href="{% url 'theme_list' %}" class="{% if request.resolver_match.url_name == 'theme_list' %}active{% endif %}">Themes</a>
+      </nav>
+      {% endif %}
+    </div>
+    <div class="sidebar-footer">
+      {% if user.is_authenticated %}
+      <div class="muted small">Signed in as {{ user.username }}</div>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="button secondary wide">Log out</button></form>
+      {% else %}
+      <a class="button wide" href="{% url 'login' %}">Log in</a>
+      {% endif %}
+    </div>
+  </aside>
+  <main class="main">
+    {% if messages %}<div class="messages">{% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>
